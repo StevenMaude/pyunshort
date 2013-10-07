@@ -21,7 +21,7 @@ import json
 #Exception handling
 def unshort(url):
     """
-    Take a url as string and returned unshorted form using unshort.me API.
+    Take a URL as string and returned unshortened form using unshort.me API.
     """
     # TODO: get API key
     query_url = 'http://api.unshort.me/unshorten/v2/?r={0}\
