@@ -1,8 +1,9 @@
 import requests
 import json
 
-#TODO: Autogenerate API key if one does not exist
-
+#TODO:
+#Autogenerate API key if one does not exist
+#Exception handling
 def unshort(url):
     """
     Take a url as string and returned unshorted form using unshort.me API.
