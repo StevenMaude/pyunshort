@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
 # Copyright 2013 Steven Maude
 
 # This program is free software: you can redistribute it and/or modify
