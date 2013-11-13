@@ -1,4 +1,5 @@
 *.pyc
+*.csv
 api_key
 bin/
 include/
