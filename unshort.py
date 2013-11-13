@@ -30,6 +30,7 @@ def unshort(url):
     """
     Take a URL as string and returned unshortened form using unshort.me API.
     """
+    # TODO: Move this into separate function
     try:
         api_key = load_api_key()
         logging.info("Loaded API key: {}".format(api_key))
@@ -41,10 +42,23 @@ def unshort(url):
     query_url = 'http://api.unshort.me/unshorten/v2/?r={0}\
                  &format={1}&api_key={2}'.format(url, 'json', api_key)
     r = requests.get(query_url)
-    output_json = json.loads(r.text)
+
+    try:
+        output_json = json.loads(r.text)
+    except ValueError:
+        # hack to retry
+        print "Retrying..."
+        time.sleep(2)
+        return unshort(url)
+
     try:
         return output_json['resolvedURL']
     except KeyError:
+        if output_json['error'] == "Error [334]":
+            print "Retrying..."
+            time.sleep(2)
+            return unshort(url)
+
         logging.warning("Error resolving URL: {}".format(url))
         return output_json['error']
 
@@ -87,14 +101,21 @@ def main():
         print "Usage: unshort.py <URL or CSV of URLs with url as header"
 
     if input_arg.endswith('csv'):
-        for url in get_urls_from_csv(input_arg):
-            unshortened_url = unshort(url)
-            if not unshortened_url.startswith('http'):
-                unshortened_url = ""
-            print url, unshortened_url
-        time.sleep(1)
+        with open('unshort.out', 'w') as f:
+            for url in get_urls_from_csv(input_arg):
+                unshortened_url = unshort(url)
+                if unshortened_url.startswith('http'):
+                    output = url + ' ' + unshortened_url + '\n'
+                    f.write(output)
+                else:
+                    output = url + '\n'
+                    f.write(output)
+
+                print url, unshortened_url
+                time.sleep(1)
     else:
-        print "{0} resolves to {1}".format(sys.argv[1], unshort(sys.argv[1]))
+        print "{0} resolves to {1}".format(sys.argv[1],
+                                           unshort(sys.argv[1]))
 
 if __name__ == '__main__':
     main()
