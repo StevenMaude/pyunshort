@@ -25,7 +25,7 @@ import requests
 #TODO: Exception handling
 def unshort(url):
     """
-    Take a url as string and returned unshorted form using unshort.me API.
+    Take a URL as string and returned unshortened form using unshort.me API.
     """
     try:
         api_key = load_api_key()
