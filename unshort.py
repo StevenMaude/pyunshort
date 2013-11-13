@@ -64,3 +64,12 @@ def store_api_key():
     """
     pass
 
+
+def main():
+    try:
+        print "{0} resolves to {1}".format(sys.argv[1], unshort(sys.argv[1]))
+    except IndexError:
+        print "Usage: unshort.py <URL>"
+
+if __name__ == '__main__':
+    main()
