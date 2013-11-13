@@ -30,52 +30,36 @@ def unshort(url):
     """
     Take a URL as string and returned unshortened form using unshort.me API.
     """
-    # TODO: Move this into separate function
-    try:
-        api_key = load_api_key()
-        logging.info("Loaded API key: {}".format(api_key))
-    except IOError:
-    # TODO: create API key
-        create_api_key()
-        load_api_key()
-
-    query_url = 'http://api.unshort.me/unshorten/v2/?r={0}\
-                 &format={1}&api_key={2}'.format(url, 'json', api_key)
+    query_url = 'http://expandurl.appspot.com/expand?url={}'.format(url)
     r = requests.get(query_url)
 
-    try:
-        output_json = json.loads(r.text)
-    except ValueError:
+    #try:
+    output_json = json.loads(r.text)
+    #except ValueError:
         # hack to retry
-        print "Retrying..."
-        time.sleep(2)
-        return unshort(url)
+    #    print "Retrying..."
+    #    time.sleep(2)
+    #    return unshort(url)
 
-    try:
-        return output_json['resolvedURL']
-    except KeyError:
-        if output_json['error'] == "Error [334]":
-            print "Retrying..."
-            time.sleep(2)
-            return unshort(url)
-
-        logging.warning("Error resolving URL: {}".format(url))
-        return output_json['error']
-
-
-def load_api_key(api_key_filename='api_key'):
-    """
-    Load unshort.me API key
-    """
-    with open(api_key_filename) as api_key_file:
-        return api_key_file.read().strip()
-
-
-def create_api_key():
-    """
-    Create unshort.me API key
-    """
-    pass
+    #try:
+    #if output_json['status'] == 'OK':
+    if output_json['end_url'].startswith('http'):
+        return output_json['end_url']
+    # for examples, where "end_url": "/Homepage.aspx",
+    # "urls": ["http://t.co/l638KnZ1Zb", "http://starcb.com", "/Homepage.aspx"]
+    else:
+        return output_json['urls'][-2]
+#elif output_json['status'] == 'InvalidURL':
+#        print "{} is bad".format(url)
+#        return ''
+    #except KeyError:
+    #    if output_json['error'] == "Error [334]":
+    #        print "Retrying..."
+    #        time.sleep(2)
+    #        return unshort(url)
+#
+#        logging.warning("Error resolving URL: {}".format(url))
+#        return output_json['error']
 
 
 def store_api_key():
@@ -112,7 +96,7 @@ def main():
                     f.write(output)
 
                 print url, unshortened_url
-                time.sleep(1)
+    #            time.sleep(1)
     else:
         print "{0} resolves to {1}".format(sys.argv[1],
                                            unshort(sys.argv[1]))
