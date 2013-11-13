@@ -1,2 +1,6 @@
 *.pyc
 api_key
+bin/
+include/
+lib/
+local/
