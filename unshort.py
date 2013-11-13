@@ -18,6 +18,9 @@
 import json
 import sys
 import logging
+import time
+
+from csv import DictReader
 
 import requests
 
@@ -68,11 +71,30 @@ def store_api_key():
     pass
 
 
+def get_urls_from_csv(csv_filename):
+    """
+    Yield a list of URLs from csv
+    """
+    with open(csv_filename, 'r') as csv:
+        for row in DictReader(csv):
+            yield row['url']
+
+
 def main():
     try:
-        print "{0} resolves to {1}".format(sys.argv[1], unshort(sys.argv[1]))
+        input_arg = sys.argv[1]
     except IndexError:
-        print "Usage: unshort.py <URL>"
+        print "Usage: unshort.py <URL or CSV of URLs with url as header"
+
+    if input_arg.endswith('csv'):
+        for url in get_urls_from_csv(input_arg):
+            unshortened_url = unshort(url)
+            if not unshortened_url.startswith('http'):
+                unshortened_url = ""
+            print url, unshortened_url
+        time.sleep(1)
+    else:
+        print "{0} resolves to {1}".format(sys.argv[1], unshort(sys.argv[1]))
 
 if __name__ == '__main__':
     main()
