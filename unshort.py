@@ -62,13 +62,6 @@ def unshort(url):
 #        return output_json['error']
 
 
-def store_api_key():
-    """
-    Store API key to api_key file.
-    """
-    pass
-
-
 def get_urls_from_csv(csv_filename):
     """
     Yield a list of URLs from csv
