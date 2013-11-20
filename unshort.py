@@ -33,33 +33,14 @@ def unshort(url):
     query_url = 'http://expandurl.appspot.com/expand?url={}'.format(url)
     r = requests.get(query_url)
 
-    #try:
     output_json = json.loads(r.text)
-    #except ValueError:
-        # hack to retry
-    #    print "Retrying..."
-    #    time.sleep(2)
-    #    return unshort(url)
 
-    #try:
-    #if output_json['status'] == 'OK':
     if output_json['end_url'].startswith('http'):
         return output_json['end_url']
     # for examples, where "end_url": "/Homepage.aspx",
     # "urls": ["http://t.co/l638KnZ1Zb", "http://starcb.com", "/Homepage.aspx"]
     else:
         return output_json['urls'][-2]
-#elif output_json['status'] == 'InvalidURL':
-#        print "{} is bad".format(url)
-#        return ''
-    #except KeyError:
-    #    if output_json['error'] == "Error [334]":
-    #        print "Retrying..."
-    #        time.sleep(2)
-    #        return unshort(url)
-#
-#        logging.warning("Error resolving URL: {}".format(url))
-#        return output_json['error']
 
 
 def get_urls_from_csv(csv_filename):
