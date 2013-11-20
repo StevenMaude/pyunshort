@@ -28,7 +28,7 @@ import requests
 #TODO: Exception handling
 def unshort(url):
     """
-    Take a URL as string and returned unshortened form using unshort.me API.
+    Take a URL as string and returned unshortened form using expandurl API.
     """
     query_url = 'http://expandurl.appspot.com/expand?url={}'.format(url)
     r = requests.get(query_url)
