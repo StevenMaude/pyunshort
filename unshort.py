@@ -18,6 +18,9 @@
 import json
 import sys
 import logging
+import time
+
+from csv import DictReader
 
 import requests
 
@@ -25,54 +28,52 @@ import requests
 #TODO: Exception handling
 def unshort(url):
     """
-    Take a URL as string and returned unshortened form using unshort.me API.
+    Take a URL as string and returned unshortened form using expandurl API.
     """
-    try:
-        api_key = load_api_key()
-        logging.info("Loaded API key: {}".format(api_key))
-    except IOError:
-    # TODO: create API key
-        create_api_key()
-        load_api_key()
-
-    query_url = 'http://api.unshort.me/unshorten/v2/?r={0}\
-                 &format={1}&api_key={2}'.format(url, 'json', api_key)
+    query_url = 'http://expandurl.appspot.com/expand?url={}'.format(url)
     r = requests.get(query_url)
+
     output_json = json.loads(r.text)
-    try:
-        return output_json['resolvedURL']
-    except KeyError:
-        logging.warning("Error resolving URL: {}".format(url))
-        return output_json['error']
+
+    if output_json['end_url'].startswith('http'):
+        return output_json['end_url']
+    # for examples, where "end_url": "/Homepage.aspx",
+    # "urls": ["http://t.co/l638KnZ1Zb", "http://starcb.com", "/Homepage.aspx"]
+    else:
+        return output_json['urls'][-2]
 
 
-def load_api_key(api_key_filename='api_key'):
+def get_urls_from_csv(csv_filename):
     """
-    Load unshort.me API key
+    Yield a list of URLs from csv
     """
-    with open(api_key_filename) as api_key_file:
-        return api_key_file.read().strip()
-
-
-def create_api_key():
-    """
-    Create unshort.me API key
-    """
-    pass
-
-
-def store_api_key():
-    """
-    Store API key to api_key file.
-    """
-    pass
+    with open(csv_filename, 'r') as csv:
+        for row in DictReader(csv):
+            yield row['url']
 
 
 def main():
     try:
-        print "{0} resolves to {1}".format(sys.argv[1], unshort(sys.argv[1]))
+        input_arg = sys.argv[1]
     except IndexError:
-        print "Usage: unshort.py <URL>"
+        print "Usage: unshort.py <URL or CSV of URLs with url as header"
+
+    if input_arg.endswith('csv'):
+        with open('unshort.out', 'w') as f:
+            for url in get_urls_from_csv(input_arg):
+                unshortened_url = unshort(url)
+                if unshortened_url.startswith('http'):
+                    output = url + ' ' + unshortened_url + '\n'
+                    f.write(output)
+                else:
+                    output = url + '\n'
+                    f.write(output)
+
+                print url, unshortened_url
+    #            time.sleep(1)
+    else:
+        print "{0} resolves to {1}".format(sys.argv[1],
+                                           unshort(sys.argv[1]))
 
 if __name__ == '__main__':
     main()
