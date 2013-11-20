@@ -65,10 +65,9 @@ def main():
                 unshortened_url = unshort(url)
                 if unshortened_url.startswith('http'):
                     output = url + ' ' + unshortened_url + '\n'
-                    f.write(output)
                 else:
                     output = url + '\n'
-                    f.write(output)
+                f.write(output)
 
                 print url, unshortened_url
     #            time.sleep(1)
