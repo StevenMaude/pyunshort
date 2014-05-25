@@ -3,7 +3,6 @@
 import json
 import sys
 import logging
-import time
 
 from csv import DictReader
 
