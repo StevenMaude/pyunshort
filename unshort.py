@@ -43,7 +43,7 @@ def main():
     try:
         input_arg = sys.argv[1]
     except IndexError:
-        print "Usage: unshort.py <URL or CSV of URLs with url as header"
+        print "Usage: unshort.py <URL or CSV of URLs with url as header>"
         sys.exit(2)
 
     if input_arg.endswith('csv'):
