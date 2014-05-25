@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
+import codecs
 import json
 import sys
 import logging
@@ -47,7 +48,7 @@ def main():
         sys.exit(2)
 
     if input_arg.endswith('csv'):
-        with open('unshort.out', 'w') as f:
+        with codecs.open('unshort.out', 'w', 'utf-8') as f:
             for url in get_urls_from_csv(input_arg):
                 unshortened_url = unshort(url)
                 if unshortened_url.startswith('http'):
@@ -62,4 +63,5 @@ def main():
                                            unshort(sys.argv[1]))
 
 if __name__ == '__main__':
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
     main()
