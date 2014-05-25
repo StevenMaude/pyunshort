@@ -8,6 +8,7 @@ import time
 from csv import DictReader
 
 import requests
+from dshelpers import request_url
 
 
 #TODO: Exception handling
@@ -17,7 +18,7 @@ def unshort(url):
     Take a URL as string and returned unshortened form using expandurl API.
     """
     query_url = 'http://expandurl.appspot.com/expand?url={}'.format(url)
-    r = requests.get(query_url)
+    r = request_url(query_url)
 
     output_json = json.loads(r.text)
 
@@ -56,7 +57,6 @@ def main():
                 f.write(output)
 
                 print url, unshortened_url
-    #            time.sleep(1)
     else:
         print "{0} resolves to {1}".format(sys.argv[1],
                                            unshort(sys.argv[1]))
