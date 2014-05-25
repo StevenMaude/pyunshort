@@ -22,7 +22,8 @@ def unshort(url):
 
     output_json = json.loads(r.text)
 
-    if output_json['end_url'].startswith('http'):
+    end_url = output_json['end_url']
+    if end_url.startswith('http') or end_url.startswith('https'):
         return output_json['end_url']
     # for examples, where "end_url": "/Homepage.aspx",
     # "urls": ["http://t.co/l638KnZ1Zb", "http://starcb.com", "/Homepage.aspx"]
