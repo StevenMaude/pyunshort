@@ -1,0 +1,1 @@
+-e git+https://github.com/scraperwiki/data-services-helpers@1.0.3#egg=dshelpers
